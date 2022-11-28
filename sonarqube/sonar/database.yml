@@ -1,0 +1,13 @@
+- name: database
+  hosts: sonar
+  become: yes
+  become_user: postgres
+  tasks:
+    - name: Connect to acme database, create django user, and grant access to database and products table
+      postgresql_user:
+       db: psql
+       name: sonar
+       password: minutus
+       priv: "CONNECT/products:ALL"
+       expires: "Jan 31 2020"
+

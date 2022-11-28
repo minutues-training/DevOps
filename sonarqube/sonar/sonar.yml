@@ -1,0 +1,26 @@
+- name: Playbook
+  hosts: test1
+  become: yes
+  become_user: root
+  tasks:
+        - name: installing
+          apt:
+            name: zip
+            state: present
+        - name: Download sonar
+          ansible.builtin.get_url:
+            url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.7.1.62043.zip
+            dest: /home/ubuntu  
+            force_basic_auth: yes
+        - name: unzip file 
+          ansible.builtin.unarchive: 
+            src: /home/ubuntu/sonarqube-9.7.1.62043.zip 
+            dest: /opt 
+            remote_src: yes
+              # - name: Creates directory
+              #file:
+              # path: /opt/sonarqube
+              #state: directory
+        - name: Move  to place
+          command: mv /opt/sonarqube-9.7.1.62043 /opt/sonarqube
+

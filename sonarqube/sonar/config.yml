@@ -1,0 +1,101 @@
+- name: Playbook
+  hosts: test1
+  become: yes
+  become_user: root
+  tasks:
+     - user:
+          name: sonar
+          state: present
+     - group:
+         name: sonar
+         state: present
+     - name: update  owner group mode
+       file:
+         path: /opt/sonarqube
+         owner: sonar
+         group: sonar
+         mode: "755"
+
+     - name: Ensure content user
+       ansible.builtin.lineinfile:
+         path: /opt/sonarqube/conf/sonar.properties
+         regexp: '#sonar.jdbc.username='
+         line: sonar.jdbc.username=sonar
+
+     - name: Ensure content passw
+       ansible.builtin.lineinfile:
+         path: /opt/sonarqube/conf/sonar.properties
+         regexp: '#sonar.jdbc.password='
+         line: sonar.jdbc.password=minutus
+
+     - name: Ensure content line
+       ansible.builtin.lineinfile:
+         path: /opt/sonarqube/conf/sonar.properties
+         regexp: '#sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube'
+         line: sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
+
+  
+
+     - name: Creating a file with content
+       copy:
+        src: "/home/ubuntu/bookofplay/sonar/sonar.service"
+        dest: "/etc/systemd/system"
+     - name: enable  service
+       become: yes
+       command: "systemctl enable sonar"
+     - name: start  service
+       become: yes
+       command: "systemctl start sonar"
+     - name: Ensure content add1
+       ansible.builtin.lineinfile:
+         path: /etc/sysctl.conf
+         regexp: '#vm.max_map_count=262144'
+         line: vm.max_map_count=262144
+     - name: Ensure content add2
+       ansible.builtin.lineinfile:
+         path: /etc/sysctl.conf
+         regexp: '#fs.file-max=65536'
+         line: fs.file-max=65536
+     - name: Ensure content add3
+       ansible.builtin.lineinfile:
+         path: /etc/sysctl.conf
+         regexp: '#ulimit -n 65536'
+         line: ulimit -n 65536
+     - name: Ensure content add3
+       ansible.builtin.lineinfile:
+         path: /etc/sysctl.conf
+         regexp: '#ulimit -u 4096'
+         line: ulimit -u 4096
+           # - name: Unconditionally reboot the machine
+       # ansible.builtin.reboot:
+         #  reboot_timeout: 3600
+     - name: Ensure content add1
+       ansible.builtin.lineinfile:
+         path: /etc/sysctl.conf
+         regexp: '#vm.max_map_count=262144'
+         line: vm.max_map_count=262144
+     - name: Ensure content add2
+       ansible.builtin.lineinfile:
+         path: /etc/sysctl.conf
+         regexp: '#fs.file-max=65536'
+         line: fs.file-max=65536
+     - name: Ensure content add3
+       ansible.builtin.lineinfile:
+         path: /etc/sysctl.conf
+         regexp: '#ulimit -n 65536'
+         line: ulimit -n 65536
+     - name: Ensure content add3
+       ansible.builtin.lineinfile:
+         path: /etc/sysctl.conf
+         regexp: '#ulimit -u 4096'
+         line: ulimit -u 4096  
+
+     - name: update  owner group mode
+       file:
+         path: /opt/sonarqube
+         owner: sonar
+         group: sonar
+         mode: "755"
+
+     - name: Fix  permissions
+       shell: 'chown sonar:sonar /opt/sonarqube -R'

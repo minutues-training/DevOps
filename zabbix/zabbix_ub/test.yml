@@ -1,0 +1,49 @@
+- name: Playbook
+  hosts: zabbix_end
+  become: yes
+  become_user: root
+  tasks:
+       - name: Install repos
+         ansible.builtin.apt:
+             deb: https://repo.zabbix.com/zabbix/6.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.2-2%2Bubuntu22.04_all.deb
+       - name: package 
+         apt:
+          dpkg_options: dpkg -i zabbix-release_6.2-2+ubuntu22.04_all.deb
+       - name: Update apt-get repo and cache
+         apt: update_cache=yes force_apt_get=yes
+       - name: install zabbix server
+         apt:
+          name: zabbix-server-mysql
+          state: present
+       - name: install zabbix php
+         apt:
+          name: zabbix-frontend-php
+          state: present
+       - name: install zabbix apache
+         apt:
+          name: zabbix-apache-conf
+          state: present
+       - name: install zabbix sql
+         apt:
+          name: zabbix-sql-scripts
+          state: present
+            #   - name: Build zcat
+            # become: yes
+            # archive:
+            # path: usr/share/zabbix-sql-scripts/mysql/server.sql.gz
+            #dest:  mysql --default-character-set=utf8mb4 -uzabbix -p zabbix
+            # format: gz
+             #   - name: install zabbix apache
+             # apt:
+             # name:  apache2 
+             # state: present
+       - name: restart  service
+         become: yes
+         command: "systemctl start zabbix-server "
+       - name: enable  service
+         become: yes
+         command: "systemctl enable zabbix-server"
+       - name: start  service
+         become: yes
+         command: "systemctl start zabbix-server"
+

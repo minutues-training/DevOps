@@ -1,0 +1,38 @@
+- name: Playbook
+  hosts: apache_ub
+  become: yes
+  become_user: root
+  tasks:
+       - name: Install repos
+         apt:
+             deb:  https://repo.zabbix.com/zabbix/6.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.2-2%2Bubuntu22.04_all.deb
+       - name: package
+         apt:
+          dpkg_options: dpkg -i zabbix-release_6.2-2+ubuntu22.04_all.deb
+       - name: Update apt-get repo and cache
+         apt: update_cache=yes force_apt_get=yes
+           # - name: install zabbix agent
+         # apt:
+           # name: zabbix-agent2 zabbix-agent2-plugin-*
+            # state: latest
+            # - name: install zabbix agent plugin
+            #apt:
+            #name: zabbix-agent2-plugin-*
+            #state: latest
+            #
+       - name: install | zabbix-agent
+         apt:
+          name: zabbix-agent
+          update_cache: yes
+          cache_valid_time: 0
+
+       - name: restart  service
+         become: yes
+         command: "systemctl start zabbix-agent"
+       - name: enable  service
+         become: yes
+         command: "systemctl enable zabbix-agent"
+           #  - name: start  service
+           # become: yes
+           # command: "systemctl start zabbix-agent2" 
+
