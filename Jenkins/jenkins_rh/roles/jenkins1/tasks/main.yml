@@ -1,0 +1,24 @@
+     - name: Install the jenkins
+       yum:
+        name: https://pkg.jenkins.io/redhat-rc/jenkins-2.0-1.1.noarch.rpm
+        state: present
+        disable_gpg_check: yes
+     - name: Import jenkins key from url
+       ansible.builtin.rpm_key:
+        state: present
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+     - name: Install latest
+       yum:
+        name: jenkins
+        state: latest
+          # - name: daemon-reload to pick up config changes
+          #   systemd:
+          #   daemon_reload: yes
+     - name: Install java
+       yum:
+         name: java-11-openjdk-devel
+         state: present
+     - name: Start jenkins
+       service:
+         name: jenkins
+         state: started

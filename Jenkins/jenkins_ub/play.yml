@@ -1,0 +1,4 @@
+- hosts: demo
+  become: true
+  roles:
+  - role: roles/jenkins2
