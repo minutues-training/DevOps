@@ -1,0 +1,16 @@
+---
+# tasks file for elk_syslog
+- name: ensure filebeat is running
+  systemd: state=restarted name=filebeat
+- name: ensure logstash is running
+  systemd: state=restarted name=logstash
+- name: create a data view for elasticsearch
+  script: ../files/create_index.sh {{ elasticsearch_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+- name: create a data view for kibana
+  script: ../files/create_index.sh {{ kibana_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+- name: create a data view for logstash
+  script: ../files/create_index.sh {{ logstash_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+    #- name: create a data view for filebeat
+    #script: ../files/create_index.sh {{ filebeat_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+
+

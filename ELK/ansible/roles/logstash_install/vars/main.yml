@@ -1,0 +1,3 @@
+---
+# vars file for logstash_install
+#index_name: jenkins_logs

@@ -1,0 +1,17 @@
+---
+# vars file for logstash_install
+index_name: jenkins_joblogs
+elk_ip: 43.204.205.20
+jenkins_ip: 3.6.252.213
+elk_user: elastic
+elk_password: minutus
+jenkins_user: neelam
+jenkins_password: minutus 
+jenkins_syslog: jenkins_syslog
+elasticsearch_syslog: elasticsearch_syslog
+kibana_syslog: kibana_syslog
+logstash_syslog: logstash_syslog
+filebeat_syslog: filebeat_syslog
+nexus_syslog: nexus_syslog
+apache_syslog: apache_syslog 
+zabbix_syslog: zabbix_syslog

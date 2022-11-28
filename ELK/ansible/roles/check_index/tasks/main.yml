@@ -1,0 +1,4 @@
+---
+- name: create index
+  script: ../files/create_index.sh {{ index_name }} {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+

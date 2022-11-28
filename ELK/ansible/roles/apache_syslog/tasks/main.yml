@@ -1,0 +1,9 @@
+---
+# tasks file for nexus_syslog
+- name: ensure filebeat is running
+  systemd: state=restarted name=filebeat
+- name: ensure logstash is running
+  systemd: state=restarted name=logstash
+
+- name: create a data view for apache
+  script: ../files/create_index.sh {{ apache_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}

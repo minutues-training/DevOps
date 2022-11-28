@@ -1,0 +1,31 @@
+---
+# tasks file for filebeat_configure
+- name: Filebeat configuration for jenkins
+  template:
+    src: ../templates/jenkins/filebeat.yml
+    dest: /etc/filebeat
+  when: inventory_hostname == "jenkins"
+- name: Filebeat configuration for elk
+  template:
+    src: ../templates/elk/filebeat.yml
+    dest: /etc/filebeat
+  when: inventory_hostname == "elk-server"
+- name: Filebeat configuration for nexus
+  template:
+    src: ../templates/nexus/filebeat.yml
+    dest: /etc/filebeat
+  when: inventory_hostname == "nexus-machine"
+- name: Filebeat configuration for apache
+  template:
+    src: ../templates/apache/filebeat.yml
+    dest: /etc/filebeat
+  when: inventory_hostname == "apache-server"
+- name: Filebeat configuration for zabbix
+  template:
+    src: ../templates/zabbix/filebeat.yml
+    dest: /etc/filebeat
+  when: inventory_hostname == "zabbix-server"
+
+- name: ensure filebeat is running
+  systemd: state=started name=filebeat
+

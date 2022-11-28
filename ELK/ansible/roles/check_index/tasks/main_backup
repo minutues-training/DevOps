@@ -1,0 +1,47 @@
+---
+# tasks file for check_index
+- name: check if elasticsearch index exists
+  uri:
+    url: 'http://43.204.205.20:9200/{{ elasticsearch_syslog }}*/'
+    method: HEAD
+    url_username: {{ elk_user }}
+    url_password: {{ elk_password }}
+    status_code: [200, 404]
+  register: result_elastic
+- name: create a data view for elasticsearch
+  script: ../files/create_index.sh {{ elasticsearch_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+  when: result_elastic['status'] == 200
+- name: check if kibana index exists
+  uri:
+    url: 'http://43.204.205.20:9200/{{ kibana_syslog }}*/'
+    method: HEAD
+    url_username: {{ elk_user }}
+    url_password: {{ elk_password }}
+    status_code: [200, 404]
+  register: result_kibana
+- name: create a data view for kibana
+  script: ../files/create_index.sh {{ kibana_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+  when: result_kibana['status'] == 200
+- name: check if logstash index exists
+  uri:
+    url: 'http://43.204.205.20:9200/{{ logstash_syslog }}*/'
+    method: HEAD
+    url_username: {{ elk_user }}
+    url_password: {{ elk_password }}
+    status_code: [200, 404]
+  register: result_logstash
+- name: create a data view
+  script: ../files/create_index.sh {{ logstash_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+  when: result_logstash['status'] == 200
+- name: check if filebeat index exists
+  uri:
+    url: 'http://43.204.205.20:9200/{{ filebeat_syslog }}*/'
+    method: HEAD
+    url_username: {{ elk_user }}
+    url_password: {{ elk_password }}
+    status_code: [200, 404]
+  register: result_filebeat
+- name: create a data view
+  script: ../files/create_index.sh {{ filebeat_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+  when: result_filebeat['status'] == 200
+

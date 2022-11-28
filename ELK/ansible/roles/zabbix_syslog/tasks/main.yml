@@ -1,0 +1,8 @@
+---
+- name: ensure filebeat is running
+  systemd: state=restarted name=filebeat
+- name: ensure logstash is running
+  systemd: state=restarted name=logstash
+- name: create a data view for zabbix
+  script: ../files/create_index.sh {{ zabbix_syslog }}  {{ elk_user }} {{ elk_password }} {{ elk_ip }}
+

@@ -1,0 +1,15 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<jenkins.plugins.logstash.LogstashConfiguration plugin="logstash@2.5.0205.vd05825ed46bd">
+  <logstashIndexer class="jenkins.plugins.logstash.configuration.ElasticSearch">
+	  <username>{{ elk_user }}</username>
+	  <password>{{ elk_password }}</password>
+	  <uri>http://{{ elk_ip }}:9200/{{ index_name }}/_doc</uri>
+    <mimeType>application/json</mimeType>
+    <customServerCertificateId></customServerCertificateId>
+  </logstashIndexer>
+  <enabled>true</enabled>
+  <dataMigrated>true</dataMigrated>
+  <enableGlobally>true</enableGlobally>
+  <milliSecondTimestamps>true</milliSecondTimestamps>
+</jenkins.plugins.logstash.LogstashConfiguration>
+
