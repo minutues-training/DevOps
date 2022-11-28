@@ -1,0 +1,55 @@
+- name: install elasticsearch rpm key
+  rpm_key:
+     key:  https://artifacts.elastic.co/GPG-KEY-elasticsearch
+     state: present
+- name: install elasticsearch 8.x rpm repository
+  yum_repository:
+     name: elasticsearch-8.x
+     description: Elasticsearch repository for 8.x packages
+     baseurl: https://artifacts.elastic.co/packages/8.x/yum
+     gpgcheck: true
+     gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  become: true
+- name: install elasticsearch
+  yum:
+     name: elasticsearch
+     state: present
+     update_cache: yes
+- name: replace config file
+  copy:
+     src: ../templates/elasticsearch.yml
+     dest: /etc/elasticsearch/elasticsearch.yml
+- name: Install firewalld
+  yum:
+        name: firewalld
+        state: latest
+  notify:
+        - start firewalld
+- name: start firewalld
+  service:
+        name: firewalld
+        state: started
+        enabled: yes
+  become: yes
+- name: enable 9200
+  firewalld:
+        zone: public
+        port: 9200/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+  become: yes
+
+
+- name: start elasticsearch
+  service:
+        name: elasticsearch
+        state: started
+        enabled: yes
+
+
+
+
+
+
+

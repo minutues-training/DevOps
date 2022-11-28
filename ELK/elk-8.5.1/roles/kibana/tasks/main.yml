@@ -1,0 +1,48 @@
+- name: add kibana repo
+  copy:
+    src: ../templates/kibana.repo
+    dest: /etc/yum.repos.d/kibana.repo
+
+- name: install kibana
+  yum:
+    name: kibana
+    state: present
+- name: Install firewalld
+  yum:
+    name: firewalld
+    state: latest
+  notify:
+   - start firewalld
+- name: start firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+  become: yes
+- name: enable 5601
+  firewalld:
+    zone: public
+    port: 5601/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+  become: yes
+- name: add kibana yml
+  copy:
+    src: ../templates/kibana.yml
+    dest: /etc/kibana/kibana.yml
+- name: start kibana
+  service:
+    name: kibana
+    state: started
+    enabled: yes
+  become: yes
+
+
+
+
+
+
+
+
+

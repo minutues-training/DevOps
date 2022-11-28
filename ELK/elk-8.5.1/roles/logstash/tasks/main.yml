@@ -1,0 +1,48 @@
+- name: add logstash repo
+  copy:
+    src: ../templates/logstash.repo
+    dest: /etc/yum.repos.d/logstash.repo
+
+- name: install logstash
+  yum:
+    name: logstash
+    state: present
+- name: Install firewalld
+  yum:
+    name: firewalld
+    state: latest
+  notify:
+   - start firewalld
+- name: start firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+  become: yes
+- name: enable 5044
+  firewalld:
+    zone: public
+    port: 5044/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+  become: yes
+    #- name: add kibana yml
+    #copy:
+    #src: ../templates/kibana.yml
+    #    dest: /etc/kibana/kibana.yml
+- name: start logstash
+  service:
+    name: logstash
+    state: started
+    enabled: yes
+  become: yes
+
+
+
+
+
+
+
+
+

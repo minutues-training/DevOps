@@ -1,0 +1,5 @@
+- hosts: zabbix-server
+  become: yes
+  vars_files:
+  roles:
+   - ../roles/filebeat

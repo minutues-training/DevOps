@@ -1,0 +1,49 @@
+---
+
+# Installing Kibana
+# tasks file for kibana_install
+- name: install kibana
+  yum:
+    name: kibana
+    state: present
+    update_cache: yes
+- name: Install firewalld
+  yum:
+        name: firewalld
+        state: latest
+  notify:
+        - start firewalld
+- name: start firewalld
+  service:
+        name: firewalld
+        state: started
+        enabled: yes
+  become: yes
+- name: enable 5601
+  firewalld:
+        zone: public
+        port: 5601/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+  become: yes
+
+# Replacing default kibana.yml with updated file
+- name: Replacing default kibana.yml with updated file
+  template:
+   src: ../templates/kibana_cp.yml
+   dest: /etc/kibana/kibana.yml
+
+# Starting Kibana
+
+     #- name: Starting Kibana
+     #  service:
+     #   name: kibana
+     #   state: started
+     #   enabled: yes
+- name: enable kibana service
+  become: yes
+  command: "systemctl enable kibana"
+- name: ensure kibana is running
+  systemd: state=started name=kibana
+

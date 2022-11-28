@@ -1,0 +1,20 @@
+---
+# tasks file for ElasticsearchInstall
+- name: install elasticsearch rpm key
+  rpm_key:
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  become: true
+
+- name: install elasticsearch 8.x rpm repository
+  yum_repository:
+    name: elasticsearch-8.x
+    description: Elasticsearch repository for 8.x packages
+    baseurl: https://artifacts.elastic.co/packages/8.x/yum
+    gpgcheck: true
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  become: true
+
+
+
+

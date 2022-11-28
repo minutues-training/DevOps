@@ -1,0 +1,18 @@
+---
+# tasks file for filebeat_install
+- name: install filebeat
+  yum:
+    name: filebeat
+    state: present
+    update_cache: yes
+- name: enable system and logstash modules
+  shell: |
+    filebeat modules enable system
+    filebeat modules enable logstash
+- name: Filebeat configuration
+  copy:
+      src: ../templates/filebeat.yml
+      dest: /etc/filebeat
+- name: ensure filebeat is running
+  systemd: state=started name=filebeat
+

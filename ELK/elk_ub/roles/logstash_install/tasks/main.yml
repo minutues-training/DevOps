@@ -1,0 +1,40 @@
+---
+# tasks file for logstash_install
+#- name: install logstash
+  # apt:
+    # name: logstash
+      # state: present
+      # update_cache: yes
+- name: Install firewalld
+  apt:
+        name: firewalld
+        state: latest
+  notify:
+        - start firewalld
+- name: start firewalld
+  service:
+        name: firewalld
+        state: started
+        enabled: yes
+  become: yes
+    #- name: enable 5044
+    # firewalld:
+    #    zone: public
+    #   port: 5044/tcp
+    #   permanent: true
+    #   state: enabled
+    #   immediate: true
+    #  become: yes
+#- name: Kibana configuration
+#  copy:
+#      src: /home/ubuntu/ansible/elk_install_ansible/config/kibana.yml
+#      dest: /etc/kibana
+- name: configure logstash
+  script: ../files/logstash_config.sh
+- name: enable logstash service
+  become: yes
+  command: "systemctl enable logstash"
+
+- name: ensure logstash is running
+  systemd: state=started name=logstash
+

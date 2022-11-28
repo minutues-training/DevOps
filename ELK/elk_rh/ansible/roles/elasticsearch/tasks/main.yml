@@ -1,0 +1,50 @@
+---
+# tasks file for elasticsearch
+
+
+# Installing Elasticsearch
+- name: install elasticsearch
+  yum:
+    name: elasticsearch
+    state: present
+    update_cache: yes
+- name: Install firewalld
+  yum:
+        name: firewalld
+        state: latest
+  notify:
+        - start firewalld
+- name: start firewalld
+  service:
+        name: firewalld
+        state: started
+        enabled: yes
+  become: yes
+- name: enable 9200
+  ansible.posix.firewalld:
+        port: 9200/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+  become: yes
+
+# Replace default elasticsearch.yml
+#- name: Replace default elasticsearch.yml
+  # template:
+  # src: elasticsearch_cp.yml
+  # dest: /etc/elasticsearch/elasticsearch.yml
+
+# Start Elasticsearch service
+
+- name: Starting Elasticsearch
+  service:
+   name: elasticsearch
+   state: started
+   enabled: yes
+
+# Xpack security configuration 
+#- name: Including xpack security setup configuration
+#  include: security/keystore.yml
+  
+
+
