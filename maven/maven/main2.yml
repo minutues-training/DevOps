@@ -1,0 +1,16 @@
+- name: maven installation
+  hosts: maven_rh
+  become: yes
+  become_user: root
+  tasks:
+    - name: Update repo and cache
+      yum: update_cache=yes 
+    - name: install java
+      yum:
+       name: java-11-openjdk-devel
+       state: present
+    - name: maven installation
+      yum:
+        name: maven
+        state: present
+

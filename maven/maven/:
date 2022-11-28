@@ -1,0 +1,35 @@
+#################
+- name: maven installation
+  hosts: demo
+  become: yes
+  become_user: root
+  tasks:
+    - name: Update apt-get repo and cache
+      apt: update_cache=yes force_apt_get=yes
+    - name: install java
+      apt:
+       name: default-jdk
+       state: present
+    - name: Download maven using get_url
+      become: yes
+      get_url:
+       url: https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+       dest: /opt
+       mode: 0755
+    - name: Untar Maven
+      unarchive:
+       src: /opt/apache-maven-3.8.6-bin.tar.gz
+       dest: /opt
+       remote_src: yes
+
+    - name: Creating lnk
+      ansible.builtin.file:
+        src: "/opt/apache-maven-3.8.6"
+        dest: "/opt/maven"
+        state: link
+    - name: Creating a file with content
+      copy:
+       dest: "/etc/profile.d/maven.sh"
+       content:
+        export M2_HOME=/opt/maven
+        export PATH=${M2_HOME}/bin:${PATH}

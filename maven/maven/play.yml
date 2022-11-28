@@ -1,0 +1,44 @@
+- name: maven installation
+  hosts: maven_rh
+  become: yes
+  become_user: root
+  tasks:
+    - name: install java
+      yum:
+       name: java-11-openjdk
+       state: present
+    - name: Download maven using get_url
+      become: yes
+      get_url:
+       url:  https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+       dest: /opt
+    - name: Update yum_repo and cache
+      yum: update_cache=yes
+        #  - name: install unzipf
+      # yum:
+        # name: unzip
+          #  state: present
+    - name: Unzip Maven
+      unarchive:
+       src: /opt/apache-maven-3.8.6-bin.tar.gz
+       dest: /opt
+       remote_src: yes
+
+    - name: Creating lnk
+      ansible.builtin.file:
+        src: "/opt/apache-maven-3.8.6"
+        dest: "/opt/maven"
+        state: link
+    - name: Creating a file with content
+      copy:
+       dest: "/etc/profile.d/maven.sh"
+       content:
+        export M2_HOME=/opt/maven
+        export PATH=${M2_HOME}/bin:${PATH}
+        #export JAVA_HOME=/usr/lib/jdk/default-java
+        export JAVA_HOME=/bin/java
+        export MAVEN_HOME=/opt/maven
+    - name: permissions
+      shell: chmod +x /etc/profile.d/maven.sh
+    - name: loading
+      shell: ". /etc/profile.d/maven.sh"

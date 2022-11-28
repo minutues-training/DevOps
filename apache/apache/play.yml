@@ -1,0 +1,18 @@
+- name: apacheee installation
+  hosts: apache_rh
+  become: yes
+  become_user: root
+  tasks:
+    - name: Update repo and cache
+      yum: update_cache=yes 
+    - name: installing
+      yum:
+        name: httpd
+        state: present
+    - name: enable  service
+      become: yes
+      command: "systemctl enable httpd.service"
+    - name: start  service
+      become: yes
+      command: "systemctl start httpd.service"
+
