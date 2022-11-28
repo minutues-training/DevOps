@@ -1,0 +1,11 @@
+- hosts: demo3
+  gather_facts: false
+  become: yes
+  become_method: sudo
+  remote_user: ubuntu
+  vars_files:
+  - roles/nexus-server/vars/main.yml
+  handlers:
+  - include_tasks: roles/nexus-server/handlers/main.yml
+  roles:
+  - role: roles/nexus-server

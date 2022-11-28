@@ -1,0 +1,99 @@
+---
+  - name: Update all installed packages using YUM module
+    yum:
+      name: '*'
+      state: latest
+      update_cache: yes
+      update_only: yes
+    register: yum_update_status
+
+  - name: Install java
+    yum:
+      name:  java-1.8.0-openjdk-devel
+      state: present
+
+        #  - name: Install the Ansible
+        # yum:
+        # name: ansible
+        # state: present
+
+        #  - name: Install the python3
+        # yum:
+        # name: python3
+        # state: present
+
+        # - name: Install the pip3
+        # yum:
+        # name: python3-pip
+        # state: present
+
+        # - name: Install the php
+        # yum:
+        # name: php
+        # state: present
+
+  - name: add nexus groupname
+    group:
+      name: "{{nexus_group}}"
+
+  - name: add nexus username
+    user:
+      name: "{{ nexus_user }}"
+      group: "{{ nexus_group }}"
+      home: /usr/share/nexus
+      createhome: yes
+
+  - name: create nexus directory
+    file:
+      path: "{{ nexus_dir }}"
+      state: directory
+      mode: 0755
+
+  - name: create sonar type directory
+    file:
+      path: "{{ sonar_type_dir }}"
+      state: directory
+      mode: 0755
+
+
+# download nexus package
+  - name: download the nexus packages
+    unarchive:
+      src: "{{ nexus_url }}"
+      dest: "{{ nexus_dir }}"
+      remote_src: yes
+      extra_opts: [--strip-components=1]
+
+  - name: uncomment the run as user fron nexus file
+    lineinfile:
+      path: "{{ nexus_rc_file }}"
+      regexp: 'run_as_user="nexus"'
+      line: run_as_user="nexus"
+
+  - name: change the ownership of file
+    file:
+      path: "{{ nexus_dir }}"
+      owner: "{{ nexus_user }}"
+      group: "{{ nexus_group }}"
+      mode: "u+rwx,g+rx,o=rx"
+      recurse: yes
+      state: directory
+
+  - name: change the ownership of file
+    file:
+      path: "{{ sonar_type_dir }}"
+      owner: "{{ nexus_user }}"
+      group: "{{ nexus_group }}"
+      mode: "u+rwx,g+rx,o=rx"
+      recurse: yes
+      state: directory
+
+  - name: create symbolic links to /etc/init.d/nexus
+    file:
+      src: "{{ nexus_service_loc }}"
+      dest: /etc/init.d/nexus
+      state: link
+      force: yes
+
+
+
